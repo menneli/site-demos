@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-grain"></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Premium Fitness Studio</p>
+    <h1 class="hero-title">
+      Reach Your<br/><em>Zenith.</em>
+    </h1>
+    <p class="hero-sub">
+      Yoga, HIIT, Pilates, Spin &amp; more — led by world-class instructors in an environment built for transformation.
+    </p>
+    <div class="hero-actions">
+      <a href="/schedule" class="btn btn-primary btn-lg">View Schedule</a>
+      <a href="/register" class="btn btn-ghost btn-lg">Join Free</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="stats-bar">
+  <div class="stat">
+    <span class="stat-num">12+</span>
+    <span class="stat-label">Class types</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <span class="stat-num">4</span>
+    <span class="stat-label">Expert instructors</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <span class="stat-num">500+</span>
+    <span class="stat-label">Members</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat">
+    <span class="stat-num">3</span>
+    <span class="stat-label">Studios</span>
+  </div>
+</section>
+
+<!-- UPCOMING CLASSES -->
+<section class="section upcoming">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">On the mat soon</p>
+      <h2 class="section-title">Upcoming Classes</h2>
+    </div>
+    <div class="cards-grid">
+      {% for cls in upcoming %}
+      <div class="class-card">
+        <div class="class-card-cat cat-{{ cls.category }}">{{ cls.category }}</div>
+        <h3 class="class-card-title">{{ cls.title }}</h3>
+        <p class="class-card-instructor">with {{ cls.instructor }}</p>
+        <div class="class-card-meta">
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            {{ cls.schedule_time.strftime('%a %d %b, %H:%M') }}
+          </span>
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            {{ cls.duration_minutes }}min
+          </span>
+          <span class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            {{ cls.spots_left }} spots
+          </span>
+        </div>
+        <div class="class-card-footer">
+          <span class="class-price">€{{ "%.0f"|format(cls.price) }}</span>
+          <a href="/schedule" class="btn btn-sm btn-outline">Book Now</a>
+        </div>
+      </div>
+      {% else %}
+      <p class="empty-state">No upcoming classes — check back soon!</p>
+      {% endfor %}
+    </div>
+    <div class="section-cta">
+      <a href="/schedule" class="btn btn-ghost">See full schedule →</a>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERINGS -->
+<section class="section offerings">
+  <div class="section-inner">
+    <div class="section-header">
+      <p class="section-eyebrow">What we offer</p>
+      <h2 class="section-title">Something for Every Body</h2>
+    </div>
+    <div class="offerings-grid">
+      <div class="offering">
+        <div class="offering-icon">🧘</div>
+        <h3>Yoga</h3>
+        <p>Vinyasa, Yin, Restorative, Aerial — from beginner to advanced.</p>
+      </div>
+      <div class="offering">
+        <div class="offering-icon">⚡</div>
+        <h3>HIIT</h3>
+        <p>High-intensity circuits that torch calories and build endurance.</p>
+      </div>
+      <div class="offering">
+        <div class="offering-icon">🚴</div>
+        <h3>Spin</h3>
+        <p>Low-impact, high-energy cycling sessions with a pulse-pounding playlist.</p>
+      </div>
+      <div class="offering">
+        <div class="offering-icon">🥊</div>
+        <h3>Boxing</h3>
+        <p>Technique-focused fundamentals that build power and coordination.</p>
+      </div>
+      <div class="offering">
+        <div class="offering-icon">🌿</div>
+        <h3>Pilates</h3>
+        <p>Core strength, flexibility, and posture — precise and restorative.</p>
+      </div>
+      <div class="offering">
+        <div class="offering-icon">🧠</div>
+        <h3>Meditation</h3>
+        <p>Breathwork and mindfulness sessions to reset and recharge.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-inner">
+    <h2>Ready to begin?</h2>
+    <p>Join Zenith and book your first class today. No commitment required.</p>
+    <a href="/register" class="btn btn-primary btn-lg">Create your account</a>
+  </div>
+</section>
+
+{% endblock %}

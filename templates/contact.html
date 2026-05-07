@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-eyebrow">Get in touch</p>
+    <h1 class="page-title">Contact Us</h1>
+  </div>
+</div>
+
+<div class="contact-wrap">
+  <div class="contact-info">
+    <h2>We'd love to hear from you</h2>
+    <p>Questions about memberships, class availability, or private sessions? Drop us a message and we'll get back to you within 24 hours.</p>
+    <div class="contact-details">
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <div>
+          <strong>Studio</strong>
+          <p>12 Wellness Lane, Studio District</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">📞</span>
+        <div>
+          <strong>Phone</strong>
+          <p>+370 5 123 4567</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">✉️</span>
+        <div>
+          <strong>Email</strong>
+          <p>hello@zenith.studio</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🕐</span>
+        <div>
+          <strong>Hours</strong>
+          <p>Mon–Fri: 6:00–22:00<br/>Sat–Sun: 8:00–20:00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-form-wrap">
+    {% if success %}
+    <div class="alert alert-success">
+      <strong>Message sent!</strong> We'll be in touch shortly.
+    </div>
+    {% endif %}
+
+    <form method="post" action="/contact" class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="Full name" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="What's this about?" />
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Your message..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Send message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

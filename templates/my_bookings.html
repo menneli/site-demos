@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-eyebrow">Hello, {{ current_user.name.split()[0] }}</p>
+    <h1 class="page-title">My Bookings</h1>
+  </div>
+</div>
+
+<div class="mybookings-wrap">
+  {% if bookings %}
+  <div class="bookings-list">
+    {% for b in bookings %}
+    <div class="booking-row">
+      <div class="booking-date-col">
+        <span class="booking-day">{{ b.gym_class.schedule_time.strftime('%a') }}</span>
+        <span class="booking-num">{{ b.gym_class.schedule_time.strftime('%d') }}</span>
+        <span class="booking-mon">{{ b.gym_class.schedule_time.strftime('%b') }}</span>
+      </div>
+      <div class="booking-info">
+        <span class="sched-cat cat-{{ b.gym_class.category }}">{{ b.gym_class.category }}</span>
+        <h3>{{ b.gym_class.title }}</h3>
+        <p>with {{ b.gym_class.instructor }} · {{ b.gym_class.schedule_time.strftime('%H:%M') }} · {{ b.gym_class.location }} · {{ b.gym_class.duration_minutes }} min</p>
+      </div>
+      <div class="booking-actions">
+        <form method="post" action="/cancel/{{ b.id }}" onsubmit="return confirm('Cancel this booking?')">
+          <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-block">
+    <p>You have no upcoming bookings.</p>
+    <a href="/schedule" class="btn btn-primary">Browse classes →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Schedule{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-eyebrow">Plan your week</p>
+    <h1 class="page-title">Class Schedule</h1>
+  </div>
+</div>
+
+<div class="schedule-wrap">
+  <!-- Filters -->
+  <div class="filters">
+    <a href="/schedule" class="filter-btn {% if not selected_cat %}active{% endif %}">All</a>
+    {% for cat in categories %}
+    <a href="/schedule?category={{ cat }}" class="filter-btn cat-filter-{{ cat }} {% if selected_cat == cat %}active{% endif %}">
+      {{ cat|capitalize }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Class list -->
+  {% if classes %}
+  <div class="schedule-grid">
+    {% for cls in classes %}
+    <div class="sched-card" data-category="{{ cls.category }}">
+      <div class="sched-card-side">
+        <div class="sched-date">
+          <span class="sched-day">{{ cls.schedule_time.strftime('%a') }}</span>
+          <span class="sched-num">{{ cls.schedule_time.strftime('%d') }}</span>
+          <span class="sched-mon">{{ cls.schedule_time.strftime('%b') }}</span>
+        </div>
+        <div class="sched-time">{{ cls.schedule_time.strftime('%H:%M') }}</div>
+      </div>
+
+      <div class="sched-card-body">
+        <div class="sched-top">
+          <span class="sched-cat cat-{{ cls.category }}">{{ cls.category }}</span>
+          <span class="sched-location">📍 {{ cls.location }}</span>
+        </div>
+        <h3 class="sched-title">{{ cls.title }}</h3>
+        <p class="sched-instructor">with <strong>{{ cls.instructor }}</strong></p>
+        <p class="sched-desc">{{ cls.description }}</p>
+        <div class="sched-meta">
+          <span>⏱ {{ cls.duration_minutes }} min</span>
+          <span>👥 {{ cls.spots_left }}/{{ cls.capacity }} spots</span>
+          <span>€{{ "%.0f"|format(cls.price) }}</span>
+        </div>
+      </div>
+
+      <div class="sched-card-action">
+        {% if cls.spots_left <= 0 %}
+          <button class="btn btn-sm btn-disabled" disabled>Full</button>
+        {% elif current_user %}
+          {% if cls.id in user_booking_ids %}
+            <span class="badge-booked">✓ Booked</span>
+          {% else %}
+            <form method="post" action="/book/{{ cls.id }}">
+              <button type="submit" class="btn btn-sm btn-primary">Book</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <a href="/login" class="btn btn-sm btn-outline">Sign in</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty-block">
+    <p>No classes found for this category. <a href="/schedule">See all →</a></p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-inner">
+    <p class="section-eyebrow">Admin Panel</p>
+    <h1 class="page-title">Dashboard</h1>
+  </div>
+</div>
+
+<div class="admin-wrap">
+
+  <!-- Stats -->
+  <div class="admin-stats">
+    <div class="admin-stat">
+      <span class="admin-stat-num">{{ stats.total_users }}</span>
+      <span class="admin-stat-label">Members</span>
+    </div>
+    <div class="admin-stat">
+      <span class="admin-stat-num">{{ stats.total_classes }}</span>
+      <span class="admin-stat-label">Classes</span>
+    </div>
+    <div class="admin-stat">
+      <span class="admin-stat-num">{{ stats.total_bookings }}</span>
+      <span class="admin-stat-label">Bookings</span>
+    </div>
+    <div class="admin-stat {% if stats.unread_messages > 0 %}admin-stat-alert{% endif %}">
+      <span class="admin-stat-num">{{ stats.unread_messages }}</span>
+      <span class="admin-stat-label">Unread Messages</span>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+
+    <!-- Add Class -->
+    <div class="admin-panel">
+      <h2 class="admin-panel-title">Add New Class</h2>
+      <form method="post" action="/admin/classes/add" class="admin-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Morning Vinyasa" required />
+          </div>
+          <div class="form-group">
+            <label>Instructor</label>
+            <input type="text" name="instructor" placeholder="Sofia Chen" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select name="category" required>
+              <option value="yoga">Yoga</option>
+              <option value="hiit">HIIT</option>
+              <option value="pilates">Pilates</option>
+              <option value="spin">Spin</option>
+              <option value="boxing">Boxing</option>
+              <option value="meditation">Meditation</option>
+              <option value="strength">Strength</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" placeholder="Studio A" value="Studio A" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date & Time</label>
+            <input type="datetime-local" name="schedule_time" required />
+          </div>
+          <div class="form-group">
+            <label>Duration (min)</label>
+            <input type="number" name="duration_minutes" value="60" min="15" max="180" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Capacity</label>
+            <input type="number" name="capacity" value="20" min="1" max="100" />
+          </div>
+          <div class="form-group">
+            <label>Price (€)</label>
+            <input type="number" name="price" value="20" min="0" step="0.5" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="2" placeholder="Short description..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Class</button>
+      </form>
+    </div>
+
+    <!-- Upcoming Classes -->
+    <div class="admin-panel">
+      <h2 class="admin-panel-title">Upcoming Classes</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Date</th>
+              <th>Spots</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cls in classes %}
+            <tr>
+              <td>
+                <strong>{{ cls.title }}</strong><br/>
+                <small>{{ cls.instructor }}</small>
+              </td>
+              <td>{{ cls.schedule_time.strftime('%d %b, %H:%M') }}</td>
+              <td>{{ cls.spots_left }}/{{ cls.capacity }}</td>
+              <td>
+                <form method="post" action="/admin/classes/delete/{{ cls.id }}" onsubmit="return confirm('Remove this class?')">
+                  <button type="submit" class="btn btn-xs btn-danger">Remove</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Bookings -->
+    <div class="admin-panel">
+      <h2 class="admin-panel-title">Recent Bookings</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Member</th><th>Class</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {% for b in recent_bookings %}
+            <tr>
+              <td>{{ b.user.name if b.user else '—' }}</td>
+              <td>{{ b.gym_class.title if b.gym_class else '—' }}</td>
+              <td>{{ b.booked_at.strftime('%d %b') }}</td>
+              <td><span class="badge-{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="admin-panel">
+      <h2 class="admin-panel-title">Recent Messages</h2>
+      <div class="messages-list">
+        {% for msg in messages %}
+        <div class="message-item {% if not msg.is_read %}message-unread{% endif %}">
+          <div class="message-meta">
+            <strong>{{ msg.name }}</strong>
+            <span>{{ msg.email }}</span>
+            <span class="message-date">{{ msg.created_at.strftime('%d %b') }}</span>
+          </div>
+          {% if msg.subject %}<div class="message-subject">{{ msg.subject }}</div>{% endif %}
+          <p class="message-body">{{ msg.message }}</p>
+          {% if not msg.is_read %}
+          <form method="post" action="/admin/messages/read/{{ msg.id }}">
+            <button type="submit" class="btn btn-xs btn-outline">Mark read</button>
+          </form>
+          {% endif %}
+        </div>
+        {% else %}
+        <p class="empty-state">No messages yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

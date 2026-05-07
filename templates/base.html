@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Zenith{% endblock %} · Zenith Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">ZENITH</a>
+  <div class="nav-links">
+    <a href="/schedule" class="nav-link {% if request.url.path == '/schedule' %}active{% endif %}">Schedule</a>
+    {% if current_user %}
+      <a href="/my-bookings" class="nav-link {% if request.url.path == '/my-bookings' %}active{% endif %}">My Bookings</a>
+      {% if current_user.is_admin %}
+        <a href="/admin" class="nav-link {% if request.url.path.startswith('/admin') %}active{% endif %}">Admin</a>
+      {% endif %}
+      <a href="/logout" class="nav-link">Log out</a>
+      <span class="nav-user">{{ current_user.name.split()[0] }}</span>
+    {% else %}
+      <a href="/contact" class="nav-link {% if request.url.path == '/contact' %}active{% endif %}">Contact</a>
+      <a href="/login" class="btn btn-ghost">Sign in</a>
+      <a href="/register" class="btn btn-primary">Join</a>
+    {% endif %}
+  </div>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-logo">ZENITH</span>
+      <p>Where strength meets stillness.</p>
+    </div>
+    <div class="footer-links">
+      <a href="/schedule">Schedule</a>
+      <a href="/contact">Contact</a>
+      <a href="/login">Sign in</a>
+    </div>
+    <div class="footer-copy">© {{ now.year }} Zenith Studio. All rights reserved.</div>
+  </div>
+</footer>
+
+<!--<script src="/static/js/main.js"></script>-->
+{% block scripts %}{% endblock %}
+</body>
+</html>
